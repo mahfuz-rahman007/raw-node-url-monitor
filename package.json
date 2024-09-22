@@ -4,5 +4,8 @@
   "description": "Raw Node Js Project To Monitor Url up down",
   "main": "index.js",
   "author": "Mahfujur Rahman",
-  "license": "MIT"
+  "license": "MIT",
+  "scripts": {
+    "start": "nodemon index"
+  }
 }
