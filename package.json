@@ -1,0 +1,8 @@
+{
+  "name": "raw-node-url-monitor",
+  "version": "1.0.0",
+  "description": "Raw Node Js Project To Monitor Url up down",
+  "main": "index.js",
+  "author": "Mahfujur Rahman",
+  "license": "MIT"
+}
