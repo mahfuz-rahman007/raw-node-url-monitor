@@ -16,9 +16,8 @@ app.createServer = () => {
 
     const server = http.createServer(app.handleReqRes);
 
-    server.listen(app.config.port, () => {
-        console.log(`Environment Variable  ${process.env.N} ${process.env.M}`);
-        console.log(`Server Running on port ${environment.config.port}`);
+    server.listen(environment.port, () => {
+        console.log(`Server Running on port ${environment.port}`);
     })
 }
 

@@ -6,6 +6,7 @@
   "author": "Mahfujur Rahman",
   "license": "MIT",
   "scripts": {
-    "start": "nodemon index"
+    "start": "NODE_ENV=staging nodemon index",
+    "prod": "NODE_ENV=production nodemon index"
   }
 }
