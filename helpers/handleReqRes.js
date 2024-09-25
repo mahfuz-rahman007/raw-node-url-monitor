@@ -6,6 +6,7 @@
 const {StringDecoder} = require('string_decoder');
 const routes = require('../routes');
 const {notFoundHandler} = require('../handler/routeHandlers/notFoundHandlers');
+const {parseJSON} = require('../helpers/utilities');
 
 const handle = {};
 
@@ -17,7 +18,7 @@ handle.handleReqRes = (req, res) => {
     
     const pathName = reqUrl.pathname;
     const trimmedPathName = pathName.replace(/^\/+|\/+$/g, '');
-    const method = req.method;
+    const method = (req.method).toLowerCase();
     const queryObject = reqUrl.searchParams;
     const headers = req.headers;
 
@@ -43,6 +44,8 @@ handle.handleReqRes = (req, res) => {
     req.on('end', () => {
         data += decoder.end();
 
+        requestProperties['body'] = parseJSON(data); 
+
         chosenHandler(requestProperties, (statusCode, payload) => {
 
             statusCode = typeof statusCode === 'number' ? statusCode : 500;
@@ -50,12 +53,12 @@ handle.handleReqRes = (req, res) => {
             
             const payloadString = JSON.stringify(payload);
     
+            res.setHeader('Content-type', 'application/json');
             res.writeHead(statusCode);
             res.end(payloadString);
         });
 
-        res.end("Hello Suckers");
-    })
+    });
     
 }
 
