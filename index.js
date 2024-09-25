@@ -12,23 +12,6 @@ const data = require('./lib/data');
 // Main Module - Scaffolding
 const app = {};
 
-// For testing
-data.create('test', 'test-data', {"name": 'Mahfujur Rahman', "age" : 22}, (err) => {
-    console.log("File Write " + err);
-});
-
-data.read('test', 'test-data', (err,result) => {
-    console.log(err, result);
-});
-
-data.update('test', 'test-data', {"name": 'Hasan Rahman', "age" : 30}, (err) => {
-    console.log("File Write " + err);
-});
-
-data.delete('test', 'test-data', (err) => {
-        console.log(err);
-});
-
 // Create Server
 app.createServer = () => {
 
