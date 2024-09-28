@@ -36,4 +36,16 @@ utilities.hash = (string) => {
   }
 };
 
+utilities.createRandomToken = (length) => {
+  const character = 'abcdefghijklmnopqrstuvwxyz1234567890';
+  let output = '';
+
+  for (let index = 0; index < length; index++) {
+    const randomChar = character.charAt(Math.floor(Math.random() * character.length));
+    output += randomChar;
+  }
+
+  return output;
+}
+
 module.exports = utilities;
