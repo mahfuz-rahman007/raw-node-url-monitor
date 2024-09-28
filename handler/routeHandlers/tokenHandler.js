@@ -57,9 +57,7 @@ handler._token.post = (requestProperties, response) => {
                     data.create('tokens', tokenId, tokenObj, (err2) => {
 
                         if(!err2) {
-                            response(200, {
-                                data: tokenObj,
-                              });
+                            response(200, tokenObj);
                         } else {
                             response(500, {
                                 error: "Token Creating Failed",
@@ -90,7 +88,37 @@ handler._token.post = (requestProperties, response) => {
 };
 
 // Get method
-handler._token.get = (requestProperties, response) => {};
+handler._token.get = (requestProperties, response) => {
+
+    const tokenId = requestProperties.queryObject.get("id");
+
+    if (tokenId && tokenId.length === 20) {
+  
+      data.read("tokens", tokenId, (err1, tokenData) => {
+  
+        if (!err1 && tokenData) {
+  
+          let parseTokenData = parseJSON(tokenData);
+    
+          response(200, parseTokenData);
+  
+        } else {
+          response(404, {
+            error: "Token in not Valid",
+          });
+        }
+  
+      });
+  
+    } else {
+      
+      response(404, {
+        error: "Token in not Valid",
+      });
+  
+    }
+
+};
 
 // Put method
 handler._token.put = (requestProperties, response) => {};
