@@ -158,6 +158,60 @@ handler._token.put = (requestProperties, response) => {
 };
 
 // Delete method
-handler._token.delete = (requestProperties, response) => {};
+handler._token.delete = (requestProperties, response) => {
+
+    const tokenId = requestProperties.queryObject.get("id");
+
+    if (tokenId && tokenId.length === 20) {
+  
+      data.read("tokens", tokenId, (err1) => {
+  
+        if (!err1) {
+  
+          data.delete('tokens', tokenId, (err2) => {
+
+            if(!err2) {
+                response(200, {
+                    error: "Token Deleted Successfully",
+                  });
+            } else {
+                response(500, {
+                    error: "Token Deleting Failed",
+                  });
+            }
+
+          })
+  
+        } else {
+          response(404, {
+            error: "Token Not Found",
+          });
+        }
+  
+      });
+  
+    } else {
+      response(400, {
+        error: "Error in The Request",
+      });
+    }
+
+};
+
+// Verify Token
+handler._token.verify = (phone, token, callback) => {
+
+    data.read('tokens', token, (err, tokenData) => {
+        if(!err) {
+            if(parseJSON(tokenData).phone === phone && parseJSON(tokenData).expires > Date.now()) {
+                callback(true);
+            } else {
+                callback(false);
+            }
+        } else {
+            callback(false);
+        }
+    });
+}
 
 module.exports = handler;

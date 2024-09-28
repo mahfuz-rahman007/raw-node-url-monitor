@@ -3,6 +3,7 @@
  */
 
 const data = require("../../lib/data");
+const { _token } = require("./tokenHandler");
 const { parseJSON, hash } = require("../../helpers/utilities");
 
 const handler = {};
@@ -93,44 +94,46 @@ handler._users.get = (requestProperties, response) => {
   const phone = requestProperties.queryObject.get("phone");
 
   if (phone && phone.length === 11) {
+    const token =
+      typeof requestProperties.headers.token === "string"
+        ? requestProperties.headers.token
+        : false;
 
-    data.read("users", phone, (err1, userData) => {
-
-      if (!err1 && userData) {
-
-        let parseUserData = parseJSON(userData);
-
-        delete parseUserData.password;
-
-        response(200, parseUserData);
-
+    _token.verify(phone, token, (tokenVerify) => {
+      if (tokenVerify) {
+        data.read("users", phone, (err1, userData) => {
+          if (!err1 && userData) {
+            let parseUserData = parseJSON(userData);
+            delete parseUserData.password;
+            response(200, parseUserData);
+          } else {
+            response(404, {
+              error: "User Not Found With This Phone",
+            });
+          }
+        });
       } else {
-        response(404, {
-          error: "User Not Found With This Phone",
+        response(403, {
+          message: "You are not Authentication",
         });
       }
-
     });
-
   } else {
-    
     response(404, {
       error: "User Not Found",
     });
-
   }
 };
 
 // Put method
 handler._users.put = (requestProperties, response) => {
-
-    const phone =
+  const phone =
     typeof requestProperties.body.phone === "string" &&
     requestProperties.body.phone.trim().length === 11
       ? requestProperties.body.phone
       : false;
 
-    const firstName =
+  const firstName =
     typeof requestProperties.body.firstName === "string" &&
     requestProperties.body.firstName.trim().length > 0
       ? requestProperties.body.firstName
@@ -148,96 +151,103 @@ handler._users.put = (requestProperties, response) => {
       ? requestProperties.body.password
       : false;
 
-    
-    if(phone) {
+  if (phone) {
+    const token =
+      typeof requestProperties.headers.token === "string"
+        ? requestProperties.headers.token
+        : false;
 
+    _token.verify(phone, token, (tokenVerify) => {
+      if (tokenVerify) {
         data.read("users", phone, (err1, userData) => {
+          if (!err1 && userData) {
+            let parseUserData = parseJSON(userData);
 
-            if (!err1 && userData) {
-      
-              let parseUserData = parseJSON(userData);
-
-              if(firstName) {
-                parseUserData.firstName = firstName;
-              }
-
-              if(lastName) {
-                parseUserData.lastName = lastName;
-              }
-
-              if(password) {
-                parseUserData.password = hash(password);
-              }
-
-              data.update("users", phone, parseUserData, (err2) => {
-                if (!err2) {
-                  response(200, {
-                    message: "User updated successfully!",
-                  });
-                } else {
-                  response(500, {
-                    error: "Could not update user",
-                  });
-                }
-              });
-                  
-            } else {
-              response(404, {
-                error: "User Not Found",
-              });
+            if (firstName) {
+              parseUserData.firstName = firstName;
             }
-      
-          });
 
-    } else {
-        response(400, {
-            error: "Error in the request"
-        })
-    }
+            if (lastName) {
+              parseUserData.lastName = lastName;
+            }
 
+            if (password) {
+              parseUserData.password = hash(password);
+            }
+
+            data.update("users", phone, parseUserData, (err2) => {
+              if (!err2) {
+                response(200, {
+                  message: "User updated successfully!",
+                });
+              } else {
+                response(500, {
+                  error: "Could not update user",
+                });
+              }
+            });
+          } else {
+            response(404, {
+              error: "User Not Found",
+            });
+          }
+        });
+      } else {
+        response(403, {
+          message: "You are not Authentication",
+        });
+      }
+    });
+  } else {
+    response(400, {
+      error: "Error in the request",
+    });
+  }
 };
 
 // Delete method
 handler._users.delete = (requestProperties, response) => {
+  const phone = requestProperties.queryObject.get("phone");
 
-    const phone = requestProperties.queryObject.get("phone");
+  if (phone && phone.length === 11) {
 
-    if (phone && phone.length === 11) {
-  
-      data.read("users", phone, (err1, userData) => {
-  
-        if (!err1 && userData) {
-  
-          data.delete('users', phone, (err2) => {
+    const token =
+      typeof requestProperties.headers.token === "string"
+        ? requestProperties.headers.token
+        : false;
 
-            if(!err2) {
+    _token.verify(phone, token, (tokenVerify) => {
+      if (tokenVerify) {
+        data.read("users", phone, (err1, userData) => {
+          if (!err1 && userData) {
+            data.delete("users", phone, (err2) => {
+              if (!err2) {
                 response(200, {
-                    error: "User Deleted Successfully",
-                  });
-            } else {
+                  error: "User Deleted Successfully",
+                });
+              } else {
                 response(500, {
-                    error: "User Deleting Failed",
-                  });
-            }
-
-          })
-  
-        } else {
-          response(404, {
-            error: "User Not Found",
-          });
-        }
-  
-      });
-  
-    } else {
-      
-      response(400, {
-        error: "Error in The Request",
-      });
-  
-    }
-
+                  error: "User Deleting Failed",
+                });
+              }
+            });
+          } else {
+            response(404, {
+              error: "User Not Found",
+            });
+          }
+        });
+      } else {
+        response(403, {
+          message: "You are not Authentication",
+        });
+      }
+    });
+  } else {
+    response(400, {
+      error: "Error in The Request",
+    });
+  }
 };
 
 module.exports = handler;
