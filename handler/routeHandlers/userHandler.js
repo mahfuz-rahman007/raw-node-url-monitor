@@ -204,7 +204,7 @@ handler._users.put = (requestProperties, response) => {
     });
   }
 };
-
+ 
 // Delete method
 handler._users.delete = (requestProperties, response) => {
   const phone = requestProperties.queryObject.get("phone");

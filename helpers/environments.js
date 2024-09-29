@@ -9,13 +9,15 @@ const environments = {};
 environments.staging = {
   port: 3000,
   envName: "staging",
-  secretKey: 'gradsgreqarsfsad'
+  secretKey: 'gradsgreqarsfsad',
+  maxChecks: 5
 };
 
 environments.production = {
   port: 5000,
   envName: "production",
-  secretKey: 'dhdtjearhrdhfhsd'
+  secretKey: 'dhdtjearhrdhfhsd',
+  maxChecks: 5
 };
 
 // Determine which environment was passed

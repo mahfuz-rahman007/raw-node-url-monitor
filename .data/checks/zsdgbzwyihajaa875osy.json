@@ -1,0 +1,15 @@
+{
+    "id": "zsdgbzwyihajaa875osy",
+    "userPhone": "01711111111",
+    "protocol": "https",
+    "url": "google.com",
+    "method": "GET",
+    "successCodes": [
+        200,
+        201
+    ],
+    "timeOutSeconds": [
+        200,
+        201
+    ]
+}

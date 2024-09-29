@@ -200,7 +200,7 @@ handler._token.delete = (requestProperties, response) => {
 
 // Verify Token
 handler._token.verify = (phone, token, callback) => {
-
+   
     data.read('tokens', token, (err, tokenData) => {
         if(!err) {
             if(parseJSON(tokenData).phone === phone && parseJSON(tokenData).expires > Date.now()) {
